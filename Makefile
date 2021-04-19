@@ -1,5 +1,6 @@
 # define the name of the virtual environment directory
-VENV := env
+VENV       := env
+DOCKER_TAG ?= latest
 
 # default target, when make executed without arguments
 .PHONY: all
@@ -20,6 +21,10 @@ venv: $(VENV)/bin/activate
 .PHONY: run
 run: venv model/model.sav
 	./$(VENV)/bin/python3 server.py
+
+.PHONY: docker
+docker: model/model.sav
+	docker build -t predict-shares:$(DOCKER_TAG) .
 
 .PHONY: clean
 clean:
