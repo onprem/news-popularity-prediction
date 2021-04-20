@@ -140,7 +140,7 @@ def processArticle(article):
   content['data_channel_is_tech'] = data_channel_is_tech
   content['data_channel_is_world'] = data_channel_is_world
   
-  day = datetime.strptime(article['date'], '%Y-%m-%d %H:%M:%S.%f').strftime("%A")
+  day = datetime.strptime(article['date'], '%a, %d %b %Y %H:%M:%S %Z').strftime("%A")
   if day == "Monday":
     content['weekday_is_monday'] = 1
   else:
@@ -196,11 +196,11 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/api/')
 def root():
   return 'STATUS OK'
 
-@app.route('/predict', methods = ['POST'])
+@app.route('/api/predict', methods = ['POST'])
 def predict():
   payload = request.get_json()
   product = processArticle(payload)
