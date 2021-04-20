@@ -1,0 +1,22 @@
+port: 5000
+
+image:
+  repository: ghcr.io/onprem/predict-shares
+
+imagePullSecrets:
+  - name: regcred
+nameOverride: 'predict-shares'
+
+imageCredentials:
+  enabled: true
+
+ingressRoute:
+  enabled: true
+  routes:
+    - rule: Host(`shares.lostfoil.com`) && PathPrefix(`/api`)
+  tls:
+    domains:
+      - main: shares.lostfoil.com
+
+postgres:
+  create: false

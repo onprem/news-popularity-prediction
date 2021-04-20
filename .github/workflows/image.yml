@@ -47,3 +47,36 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get short SHA
+        id: slug
+        run: echo "::set-output name=sha7::$(echo ${GITHUB_SHA} | cut -c1-7)"
+
+      - name: GET GKE credentials
+        id: get-credentials
+        uses: google-github-actions/get-gke-credentials@main
+        with:
+          cluster_name: guchha
+          project_id: stiens-gate
+          location: asia-south1-b
+          credentials: ${{ secrets.GCP_SA }}
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v1
+        id: install
+
+      - name: Deploy Application
+        env:
+          PAT: ${{ secrets.CR_PAT }}
+          TAG: ${{ steps.slug.outputs.sha7 }}
+        run: |
+          helm repo add lostfoil https://lostfoil.github.io/charts
+          helm upgrade -i -f .lostfoil/values.yaml --set imageCredentials.password="$PAT" --set image.tag="sha-$TAG" -n nurturx-api --create-namespace --wait nurturx-api lostfoil/app
