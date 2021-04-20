@@ -7,6 +7,10 @@ RUN python -m pip install -r requirements.txt
 
 RUN python -m nltk.downloader stopwords punkt
 
+COPY ./model ./model
+
+RUN cd model && python train.py
+
 COPY . .
 
 EXPOSE 5000

@@ -79,4 +79,4 @@ jobs:
           TAG: ${{ steps.slug.outputs.sha7 }}
         run: |
           helm repo add lostfoil https://lostfoil.github.io/charts
-          helm upgrade -i -f .lostfoil/values.yaml --set imageCredentials.password="$PAT" --set image.tag="sha-$TAG" -n nurturx-api --create-namespace --wait nurturx-api lostfoil/app
+          helm upgrade -i -f .lostfoil/values.yaml --set imageCredentials.password="$PAT" --set image.tag="sha-$TAG" -n predict-shares --create-namespace --wait predict-shares lostfoil/app
